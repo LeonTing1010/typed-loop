@@ -1,0 +1,2 @@
+# Loop state is per-project runtime, never committed.
+.claude/typed-loop.local.md

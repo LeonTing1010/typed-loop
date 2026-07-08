@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "typed-loop",
+  "description": "typed-loop — a well-typed agentic loop for Claude Code. The stop condition is an external verify command's exit code, not the agent's self-judged promise.",
+  "owner": {
+    "name": "Leo",
+    "url": "https://github.com/LeonTing1010"
+  },
+  "plugins": [
+    {
+      "name": "typed-loop",
+      "description": "A well-typed agentic loop — the typed successor to ralph-loop. The stop condition is an external verify command's exit code, not the agent's self-judged promise. Ships a deterministic ratchet (git checkpoint + revert-on-regression), a decreasing failure measure, red-team-until-dry, and an honest human gate for unformalizable acceptance. Moves the oracle out of the agent's token stream.",
+      "source": "./plugins/typed-loop",
+      "category": "development",
+      "author": {
+        "name": "Leo"
+      }
+    }
+  ]
+}

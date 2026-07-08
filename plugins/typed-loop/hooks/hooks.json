@@ -1,0 +1,15 @@
+{
+  "description": "typed-loop driver: external verify-gated stop + ratchet (checkpoint/revert) + red-team-until-dry + human gate",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+#!/bin/bash
+# typed-loop verify gate — the INDEPENDENT oracle. Copy to your repo, fill in
+# your real gates, pass it as  --verify 'bash verify.sh'.
+#
+# CONTRACT
+#   exit 0   → all gates green → the loop may ship
+#   exit !=0 → at least one gate failed → the loop keeps working
+#   OPTIONAL → print one line  TYPED_LOOP_FAILS=<n>  to give the loop a
+#              fine-grained DECREASING MEASURE (e.g. number of failing tests).
+#              Without it the measure is binary (0 pass / 1 fail) — still works,
+#              just coarser, so the ratchet can't tell "5 fails → 3 fails".
+#
+# Order gates strongest→weakest (this mirrors the CDD verify pyramid):
+#   typecheck (L1) → tests/property (L2) → mutation (Safety only) → arch (L4).
+# Keep it deterministic and agent-independent: it must judge the artifact, not
+# ask the agent whether it thinks it is done.
+
+set -uo pipefail
+fails=0
+
+# --- L1 typecheck -------------------------------------------------------------
+# npm run -s typecheck || fails=$((fails+1))
+# deno check **/*.ts     || fails=$((fails+1))
+
+# --- L2 tests (count failures for a fine-grained measure) ---------------------
+# n=$(npm test 2>&1 | grep -cE '✗|FAIL|failing') ; fails=$((fails+n))
+
+# --- mutation (Safety-tagged only; slow — gate it) ----------------------------
+# npx stryker run --mutate 'src/domain/**' || fails=$((fails+1))
+
+# --- report the measure + exit ------------------------------------------------
+echo "TYPED_LOOP_FAILS=$fails"
+[[ "$fails" -eq 0 ]]

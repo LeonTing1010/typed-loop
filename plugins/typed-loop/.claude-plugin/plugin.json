@@ -1,0 +1,8 @@
+{
+  "name": "typed-loop",
+  "version": "0.1.0",
+  "description": "Well-typed agentic loop. The stop condition is an external verify command's exit code — not the agent's self-judged promise. Ships a deterministic ratchet (git checkpoint + revert-on-regression), a decreasing failure measure, red-team-until-dry, and an honest human gate for unformalizable acceptance. The typed successor to ralph-loop: same shell-loop shape, but the oracle lives outside the agent's token stream.",
+  "author": {
+    "name": "Leo"
+  }
+}
