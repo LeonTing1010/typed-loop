@@ -17,10 +17,69 @@ talk its way out of.
 
 ## Install
 
+### Requirements
+
+- **[Claude Code](https://claude.com/claude-code)** (the plugin registers a `Stop` hook).
+- **`jq`** — required; the hook parses Claude Code's hook I/O with it.
+  `brew install jq` (macOS) · `apt install jq` (Debian/Ubuntu).
+- **`git`** — required for the ratchet (per-iteration checkpoint + revert-on-regression).
+  Without a git repo the verify gate and the decreasing measure still work; only
+  checkpoint/revert are skipped.
+- **bash + coreutils** (`sed`, `awk`, `grep`, `mktemp`, `date`) — default on macOS/Linux.
+
+### Steps
+
+1. Add this repo as a plugin marketplace:
+
+   ```
+   /plugin marketplace add LeonTing1010/typed-loop
+   ```
+
+2. Install the plugin (the marketplace and the plugin are both named `typed-loop`;
+   the `@typed-loop` suffix names the marketplace):
+
+   ```
+   /plugin install typed-loop@typed-loop
+   ```
+
+3. If the `/typed-loop` command or the `Stop` hook doesn't appear immediately,
+   **restart Claude Code** so the plugin's hook registers.
+
+### Verify it installed
+
+- Run `/plugin` and confirm **typed-loop** shows as installed/enabled, **or**
+- type `/typed-loop:help` — you should get the usage text.
+
+### First run
+
 ```
-/plugin marketplace add LeonTing1010/typed-loop
-/plugin install typed-loop
+# 1. Copy the gate contract into your repo and fill in your real checks:
+cp <plugin>/scripts/verify.sh.template ./verify.sh
+#    edit verify.sh → typecheck, tests, etc.; exit 0 when green.
+
+# 2. Start a loop gated on it:
+/typed-loop Fix the failing tests in src/ --verify 'bash verify.sh'
 ```
+
+The loop now runs until `verify.sh` exits 0 (or a bound / human hand-off). While
+it's red, the same prompt returns with the failures appended; a regression is
+reverted to the last-good checkpoint. Stop it early with `/cancel-typed-loop`.
+
+### Update / uninstall
+
+```
+/plugin marketplace update typed-loop     # pull the latest version
+/plugin uninstall typed-loop@typed-loop   # remove it
+```
+
+### Troubleshooting
+
+- **`jq: command not found`** in the hook → install `jq` (see Requirements).
+- **The loop won't stop** → that's by design; it ends only when `verify` exits 0,
+  the `--max-iterations` bound is hit, or (with `--human-gate`) you hand off. Use
+  `/cancel-typed-loop` to end it manually.
+- **"ratchet disabled (no git repo)"** → run inside a git repo to get
+  checkpoint/revert; the gate and measure work regardless.
 
 ## Use
 
